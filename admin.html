@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tiny.cloud/1/tmkn3fjkqruhxrxzucgpa2cmmd33kveh6xqfta2nqc1aopvv/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css">
+    </head>
+
+<body>
+
+    <header>
+        <h1>Panel Admin Proyek</h1>
+        <p>Tambah, edit, atau hapus daftar proyekmu di sini.</p>
+    </header>
+
+    <main>
+        <div class="admin-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:20px;">
+                <p>Selamat datang, <strong id="admin-email"></strong>!</p>
+                <button id="logout-btn">Logout</button>
+            </div>
+
+            <h2>Tambah/Edit Proyek</h2>
+            <form id="project-form">
+                <input type="hidden" id="project-id">
+                <input type="hidden" id="project-image-old-url">
+
+                <input type="text" id="project-title" placeholder="Judul Proyek" required>
+<textarea id="project-description" placeholder="Deskripsi Proyek" rows="4"></textarea>
+                <select id="project-category" required>
+                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                </select>
+
+                <label for="project-image">Upload Gambar Utama (jika ingin ganti):</label>
+                <input type="file" id="project-image" accept="image/*">
+
+                <label for="project-images">Upload Gambar Galeri (bisa pilih banyak):</label>
+                <input type="file" id="project-images" accept="image/*" multiple>
+
+                <input type="text" id="project-link" placeholder="Link ke Proyek" required>
+                
+                <div class="checkbox-container">
+                    <input type="checkbox" id="project-featured">
+                    <label for="project-featured">Jadikan Proyek Unggulan (Featured)</label>
+                </div>
+                
+                <button type="submit">Simpan Proyek</button>
+            </form>
+
+            <h2>Daftar Proyek Saat Ini</h2>
+            <div id="admin-project-list">
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="script.js"></script>
+    <script>
+  tinymce.init({
+    selector: 'textarea#project-description',  // Menargetkan textarea kita
+    plugins: 'lists link image table code help wordcount',
+    toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image | code'
+  });
+</script>
+</body>
+
+</html>

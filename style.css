@@ -1,0 +1,472 @@
+/* --- 1. Variabel & Pengaturan Dasar --- */
+:root {
+    --primary-color: #007BFF;
+    --primary-hover: #0056b3;
+    --text-color: #333;
+    --light-text-color: #555;
+    --background-color: #f7f9fc;
+    --card-background: #ffffff;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --featured-color: #FFD700;
+}
+
+body {
+    font-family: 'Inter', sans-serif; /* Font baru */
+    background-color: var(--background-color);
+    background-image: linear-gradient(180deg, #ffffff 0%, var(--background-color) 200px); /* Gradasi halus */
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+/* --- 2. Header & Footer --- */
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.8em;
+    color: #222;
+}
+
+header p {
+    color: var(--light-text-color);
+    font-size: 1.1em;
+}
+
+footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: #888;
+}
+
+footer a {
+    color: var(--light-text-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+/* --- 3. Kartu Proyek (Project Card) --- */
+.project-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.project-card {
+    background-color: var(--card-background);
+    border-radius: 12px; /* Sudut lebih bulat */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px var(--shadow-color);
+}
+
+.project-card.featured {
+    border: 2px solid var(--featured-color);
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
+}
+
+.project-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.project-card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.project-card h3 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.project-card p {
+    font-size: 0.9em;
+    flex-grow: 1;
+    color: var(--light-text-color);
+}
+
+.project-card a {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.project-card a:hover {
+    background-color: var(--primary-hover);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: var(--featured-color);
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+/* --- 4. Filter & Search --- */
+.filter-container, .search-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.filter-btn {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+#search-input {
+    padding: 10px 15px;
+    width: 50%;
+    max-width: 400px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 1em;
+}
+
+/* --- 5. Halaman Admin & Login --- */
+.login-container, .admin-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background: var(--card-background);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.admin-container {
+    max-width: 900px;
+}
+
+#error-message {
+    color: #dc3545;
+    margin-bottom: 15px;
+    text-align: center;
+    background-color: rgba(220, 53, 69, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 30px;
+}
+
+form input, form textarea, form button, form select {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: 'Inter', sans-serif;
+}
+
+form button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+form button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+.checkbox-container input {
+    width: auto;
+}
+
+.admin-project-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-project-list-item button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.edit-btn { background-color: var(--primary-color); }
+.delete-btn { background-color: #dc3545; }
+#logout-btn { background-color: #dc3545; padding: 8px 15px; }
+
+/* --- 6. Halaman Detail --- */
+#project-detail-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: var(--card-background);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    border-radius: 12px;
+}
+
+#project-detail-container h1 {
+    color: #222;
+}
+
+#project-detail-container .swiper-slide img {
+    display: block;
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#project-description {
+    margin-top: 30px;
+    color: var(--light-text-color);
+}
+
+#project-link {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+/* --- 8. Pagination --- */
+.pagination-container {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.page-btn {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.page-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.page-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#page-indicator {
+    font-weight: bold;
+    color: var(--light-text-color);
+}
+
+/* --- 9. Desain Ulang Halaman Detail --- */
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.detail-header {
+    margin-bottom: 20px;
+}
+
+.detail-header h1 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+.category-badge {
+    display: inline-block;
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--primary-color);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.detail-content {
+    margin-top: 30px;
+}
+
+.detail-content h3 {
+    font-size: 1.5em;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.detail-content p {
+    font-size: 1.1em;
+    line-height: 1.7;
+    color: var(--light-text-color);
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Penyesuaian untuk mobile di halaman detail */
+@media (max-width: 480px) {
+    .detail-header h1 {
+        font-size: 2em;
+    }
+}
+
+/* --- 7. Media Queries (Desain Responsif) --- */
+
+/* Untuk layar Tablet (lebar maksimal 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    header h1 {
+        font-size: 2.2em;
+    }
+
+    .project-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .login-container, 
+    .admin-container,
+    #project-detail-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    #search-input {
+        width: 80%;
+    }
+}
+
+
+/* Untuk layar Mobile (lebar maksimal 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    header p {
+        font-size: 1em;
+    }
+
+    .project-container {
+        /* Hanya satu kolom di layar kecil */
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        margin: 3px;
+    }
+
+    #search-input {
+        width: 90%;
+    }
+
+    .admin-project-list-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
