@@ -142,8 +142,7 @@ header p {
 }
 
 .project-card-content p {
-    font-size: 0.9em;
-    flex-grow: 1;
+    font-size: 0.9em;
     color: var(--light-text-color);
     margin-bottom: 15px;
 }
