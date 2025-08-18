@@ -80,15 +80,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         card.classList.add('featured');
                     }
                     card.dataset.category = project.category;
+                    // Di dalam file script.js -> fungsi renderProjects
+
                     card.innerHTML = `
-                    <img src="${project.mainImageUrl}" alt="${project.title}">
-                    <div class="project-card-content">
-                        ${project.isFeatured ? '<div class="featured-badge">Unggulan</div>' : ''}
-                        <h3>${project.title}</h3>
-                        <p>${project.description.substring(0, 100)}...</p>
-                        <a href="detail.html?id=${project.id}">Lihat Detail</a>
-                    </div>
-                `;
+    <img src="${project.mainImageUrl}" alt="${project.title}">
+
+    <div class="project-info-badges">
+        ${project.status ? `<span class="badge status-badge">${project.status}</span>` : ''}
+        ${project.rating ? `<span class="badge rating-badge">⭐ ${project.rating}</span>` : ''}
+    </div>
+    <div class="project-card-content">
+        ${project.isFeatured ? '<div class="featured-badge">Unggulan</div>' : ''}
+        <h3>${project.title}</h3>
+        <p>${project.description.substring(0, 100)}...</p>
+        <a href="detail.html?id=${project.id}">Lihat Detail</a>
+    </div>
+`;
                     publicProjectList.appendChild(card);
                 });
             }
@@ -330,13 +337,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
 
+                        // GANTI objek projectData yang lama dengan yang ini
                         const projectData = {
                             title: document.getElementById('project-title').value,
                             description: tinymce.get('project-description').getContent(),
                             link: document.getElementById('project-link').value,
-                            category: document.getElementById('project-category').value, // <-- INI BARIS YANG DIPERBAIKI
+                            category: document.getElementById('project-category').value,
+                            status: document.getElementById('project-status').value, // <-- TAMBAHKAN INI
+                            rating: document.getElementById('project-rating').value,   // <-- TAMBAHKAN INI
                             mainImageUrl: mainImageUrl,
-                            isFeatured: document.getElementById('project-featured').checked, // <-- TAMBAHKAN INI
+                            isFeatured: document.getElementById('project-featured').checked,
                             createdAt: new Date()
                         };
 
@@ -395,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (e.target.classList.contains('edit-btn')) {
                         const docSnap = await getDoc(projectDocRef);
+                        // Di dalam fungsi edit, tambahkan dua baris ini
                         if (docSnap.exists()) {
                             const project = docSnap.data();
                             document.getElementById('project-id').value = id;
@@ -402,8 +413,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             tinymce.get('project-description').setContent(project.description || '');
                             document.getElementById('project-link').value = project.link;
                             document.getElementById('project-category').value = project.category || '';
+                            document.getElementById('project-status').value = project.status || ''; // <-- TAMBAHKAN INI
+                            document.getElementById('project-rating').value = project.rating || ''; // <-- TAMBAHKAN INI
                             document.getElementById('project-image-old-url').value = project.mainImageUrl;
-                            document.getElementById('project-featured').checked = project.isFeatured || false; // <-- TAMBAHKAN INI
+                            document.getElementById('project-featured').checked = project.isFeatured || false;
 
                             window.scrollTo(0, 0);
                         }

@@ -44,6 +44,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('project-link').href = project.link;
             document.getElementById('project-category-badge').textContent = project.category;
 
+            // --- MULAI TAMBAHKAN KODE INI ---
+            const statusBadge = document.getElementById('project-status-badge');
+            if (project.status) {
+                statusBadge.textContent = project.status;
+                statusBadge.style.display = 'inline-block'; // Tampilkan elemennya
+            } else {
+                statusBadge.style.display = 'none'; // Sembunyikan jika tidak ada data
+            }
+
+            const ratingBadge = document.getElementById('project-rating-badge');
+            if (project.rating && project.rating > 0) {
+                ratingBadge.innerHTML = `⭐ ${project.rating}`; // Pakai innerHTML untuk emoji
+                ratingBadge.style.display = 'inline-block'; // Tampilkan elemennya
+            } else {
+                ratingBadge.style.display = 'none'; // Sembunyikan jika tidak ada data
+            }
+            // --- AKHIR DARI KODE TAMBAHAN ---
+
             // Isi gambar ke dalam slider
             const imagesWrapper = document.getElementById('project-images-wrapper');
             let imageUrls = [project.mainImageUrl, ...(project.galleryImageUrls || [])];

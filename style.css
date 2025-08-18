@@ -1,58 +1,99 @@
-/* --- 1. Variabel & Pengaturan Dasar --- */
+/* ==========================================================================
+   1. Variabel & Pengaturan Dasar (Light & Dark Mode)
+   ========================================================================== */
 :root {
     --primary-color: #007BFF;
     --primary-hover: #0056b3;
-    --text-color: #333;
-    --light-text-color: #555;
     --background-color: #f7f9fc;
     --card-background: #ffffff;
-    --border-color: #e0e0e0;
+    --text-color: #212529;
+    --light-text-color: #6c757d;
+    --border-color: #e9ecef;
     --shadow-color: rgba(0, 0, 0, 0.08);
     --featured-color: #FFD700;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+
+    --font-family: 'Inter', sans-serif;
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+}
+
+body.dark-mode {
+    --primary-color: #17a2b8;
+    --primary-hover: #138496;
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --text-color: #e9ecef;
+    --light-text-color: #adb5bd;
+    --border-color: #343a40;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --featured-color: #FFC107;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Inter', sans-serif; /* Font baru */
+    font-family: var(--font-family);
     background-color: var(--background-color);
-    background-image: linear-gradient(180deg, #ffffff 0%, var(--background-color) 200px); /* Gradasi halus */
     color: var(--text-color);
     margin: 0;
     padding: 20px;
     line-height: 1.6;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
-/* --- 2. Header & Footer --- */
+
+/* ==========================================================================
+   2. Header & Tombol Tema
+   ========================================================================== */
 header {
     text-align: center;
     margin-bottom: 40px;
+    position: relative;
 }
 
 header h1 {
     font-size: 2.8em;
-    color: #222;
+    margin-bottom: 0.2em;
 }
 
 header p {
     color: var(--light-text-color);
     font-size: 1.1em;
+    margin-top: 0;
 }
 
-footer {
-    text-align: center;
-    margin-top: 50px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    color: #888;
+#theme-toggle {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    background: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease;
 }
 
-footer a {
-    color: var(--light-text-color);
-    text-decoration: none;
-    font-weight: bold;
+#theme-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 
-/* --- 3. Kartu Proyek (Project Card) --- */
+/* ==========================================================================
+   3. Kartu Proyek (Project Card)
+   ========================================================================== */
 .project-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -63,13 +104,14 @@ footer a {
 
 .project-card {
     background-color: var(--card-background);
-    border-radius: 12px; /* Sudut lebih bulat */
+    border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 15px var(--shadow-color);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease, background-color var(--transition-speed);
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .project-card:hover {
@@ -78,8 +120,7 @@ footer a {
 }
 
 .project-card.featured {
-    border: 2px solid var(--featured-color);
-    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.3);
+    border-color: var(--featured-color);
 }
 
 .project-card img {
@@ -93,50 +134,83 @@ footer a {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    position: relative;
 }
 
-.project-card h3 {
+.project-card-content h3 {
     margin-top: 0;
     color: var(--text-color);
 }
 
-.project-card p {
+.project-card-content p {
     font-size: 0.9em;
     flex-grow: 1;
     color: var(--light-text-color);
+    margin-bottom: 15px;
 }
 
-.project-card a {
+.project-card-content a {
     display: inline-block;
     background-color: var(--primary-color);
     color: #fff;
     padding: 10px 15px;
     text-decoration: none;
     border-radius: 8px;
-    margin-top: 15px;
+    margin-top: auto;
     font-weight: bold;
     text-align: center;
-    transition: background-color 0.2s;
+    transition: background-color var(--transition-speed);
 }
 
-.project-card a:hover {
+.project-card-content a:hover {
     background-color: var(--primary-hover);
 }
 
 .featured-badge {
     position: absolute;
-    top: 20px;
+    top: -1px;
     right: 20px;
     background-color: var(--featured-color);
     color: #333;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 5px 15px;
+    border-radius: 0 0 8px 8px;
     font-size: 0.8em;
     font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* --- 4. Filter & Search --- */
+/* Badge untuk Status & Rating */
+.project-info-badges {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 2;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.status-badge {
+    background-color: var(--info-color);
+}
+
+.rating-badge {
+    background-color: var(--featured-color);
+    color: #333;
+    text-shadow: none;
+}
+
+
+/* ==========================================================================
+   4. Filter, Search & Pagination
+   ========================================================================== */
 .filter-container, .search-container {
     text-align: center;
     margin-bottom: 30px;
@@ -151,157 +225,37 @@ footer a {
     border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.2s;
+    transition: all var(--transition-speed);
 }
 
 .filter-btn:hover {
     background-color: var(--primary-color);
-    color: #fff;
+    color: var(--card-background);
 }
 
 .filter-btn.active {
     background-color: var(--primary-color);
-    color: #fff;
+    color: var(--card-background);
 }
 
 #search-input {
-    padding: 10px 15px;
-    width: 50%;
+    padding: 12px 20px;
+    width: 60%;
     max-width: 400px;
     border: 1px solid var(--border-color);
+    background-color: var(--card-background);
+    color: var(--text-color);
     border-radius: 20px;
     font-size: 1em;
+    transition: all var(--transition-speed);
 }
 
-/* --- 5. Halaman Admin & Login --- */
-.login-container, .admin-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    background: var(--card-background);
-    box-shadow: 0 4px 15px var(--shadow-color);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
+#search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
 }
 
-.admin-container {
-    max-width: 900px;
-}
-
-#error-message {
-    color: #dc3545;
-    margin-bottom: 15px;
-    text-align: center;
-    background-color: rgba(220, 53, 69, 0.1);
-    padding: 10px;
-    border-radius: 8px;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 30px;
-}
-
-form input, form textarea, form button, form select {
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1em;
-    font-family: 'Inter', sans-serif;
-}
-
-form button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.2s;
-}
-
-form button:hover {
-    background-color: #218838;
-}
-
-form button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-}
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 5px;
-}
-.checkbox-container input {
-    width: auto;
-}
-
-.admin-project-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.admin-project-list-item button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-}
-
-.edit-btn { background-color: var(--primary-color); }
-.delete-btn { background-color: #dc3545; }
-#logout-btn { background-color: #dc3545; padding: 8px 15px; }
-
-/* --- 6. Halaman Detail --- */
-#project-detail-container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
-    background: var(--card-background);
-    box-shadow: 0 4px 15px var(--shadow-color);
-    border-radius: 12px;
-}
-
-#project-detail-container h1 {
-    color: #222;
-}
-
-#project-detail-container .swiper-slide img {
-    display: block;
-    width: 100%;
-    max-height: 500px;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-#project-description {
-    margin-top: 30px;
-    color: var(--light-text-color);
-}
-
-#project-link {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: #fff;
-    padding: 12px 20px;
-    text-decoration: none;
-    border-radius: 8px;
-    margin-top: 20px;
-    font-weight: bold;
-}
-
-/* --- 8. Pagination --- */
 .pagination-container {
     text-align: center;
     margin-top: 40px;
@@ -316,7 +270,7 @@ form button:disabled {
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.2s;
+    transition: background-color var(--transition-speed);
 }
 
 .page-btn:hover {
@@ -324,8 +278,9 @@ form button:disabled {
 }
 
 .page-btn:disabled {
-    background-color: #ccc;
+    background-color: var(--light-text-color);
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
 #page-indicator {
@@ -333,7 +288,108 @@ form button:disabled {
     color: var(--light-text-color);
 }
 
-/* --- 9. Desain Ulang Halaman Detail --- */
+
+/* ==========================================================================
+   5. Halaman Admin & Login
+   ========================================================================== */
+.login-container, .admin-container {
+    max-width: 450px;
+    margin: 50px auto;
+    padding: 30px;
+    background: var(--card-background);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-speed);
+}
+
+.admin-container {
+    max-width: 900px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form input, form textarea, form select {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: var(--font-family);
+    transition: all var(--transition-speed);
+}
+
+form input:focus, form textarea:focus, form select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
+}
+
+form button {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-family: var(--font-family);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color var(--transition-speed);
+}
+
+form button[type="submit"] {
+    background-color: var(--success-color);
+}
+form button[type="submit"]:hover {
+    background-color: color-mix(in srgb, var(--success-color) 90%, black);
+}
+
+.admin-project-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed);
+}
+.admin-project-list-item:last-child {
+    border-bottom: none;
+}
+.admin-project-list-item:hover {
+    background-color: color-mix(in srgb, var(--border-color) 50%, transparent);
+}
+
+.admin-project-list-item button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.edit-btn { background-color: var(--primary-color); }
+.delete-btn { background-color: var(--danger-color); }
+#logout-btn { background-color: var(--danger-color); padding: 8px 15px; }
+
+
+/* ==========================================================================
+   6. Halaman Detail
+   ========================================================================== */
+#project-detail-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 30px;
+    background: var(--card-background);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    border-radius: var(--border-radius);
+    transition: all var(--transition-speed);
+}
 
 .back-link {
     display: inline-block;
@@ -344,7 +400,9 @@ form button:disabled {
 }
 
 .detail-header {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
 }
 
 .detail-header h1 {
@@ -352,15 +410,31 @@ form button:disabled {
     margin: 0;
 }
 
+.detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
 .category-badge {
     display: inline-block;
-    background-color: rgba(0, 123, 255, 0.1);
+    background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
     color: var(--primary-color);
     padding: 5px 12px;
     border-radius: 15px;
     font-size: 0.9em;
     font-weight: bold;
-    margin-top: 10px;
+}
+
+.category-badge.status-badge {
+    background-color: var(--info-color);
+    color: #fff;
+}
+
+.category-badge.rating-badge {
+    background-color: var(--featured-color);
+    color: #333;
 }
 
 .detail-content {
@@ -374,23 +448,26 @@ form button:disabled {
     margin-bottom: 15px;
 }
 
-.detail-content p {
+.detail-content p, .detail-content ul, .detail-content ol {
     font-size: 1.1em;
     line-height: 1.7;
     color: var(--light-text-color);
+}
+.detail-content a {
+    color: var(--primary-color);
 }
 
 .cta-button {
     display: inline-block;
     background-color: var(--primary-color);
-    color: #fff;
+    color: #fff !important; /* Override p a color */
     padding: 12px 25px;
     text-decoration: none;
     border-radius: 8px;
     margin-top: 20px;
     font-weight: bold;
     font-size: 1.1em;
-    transition: all 0.2s ease;
+    transition: all var(--transition-speed) ease;
 }
 
 .cta-button:hover {
@@ -398,75 +475,97 @@ form button:disabled {
     transform: translateY(-2px);
 }
 
-/* Penyesuaian untuk mobile di halaman detail */
-@media (max-width: 480px) {
-    .detail-header h1 {
-        font-size: 2em;
-    }
+/* Swiper Slider adjustments */
+.swiper {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--border-radius);
 }
 
-/* --- 7. Media Queries (Desain Responsif) --- */
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-/* Untuk layar Tablet (lebar maksimal 768px) */
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    max-height: 500px;
+    height: auto;
+    object-fit: contain;
+}
+
+.swiper-button-next, .swiper-button-prev {
+    color: var(--primary-color) !important;
+}
+
+.swiper-pagination-bullet-active {
+    background: var(--primary-color) !important;
+}
+
+
+/* ==========================================================================
+   7. Footer
+   ========================================================================== */
+footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--light-text-color);
+    transition: all var(--transition-speed);
+}
+
+footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+/* ==========================================================================
+   8. Media Queries (Desain Responsif)
+   ========================================================================== */
 @media (max-width: 768px) {
     body {
         padding: 15px;
     }
-
     header h1 {
         font-size: 2.2em;
     }
-
-    .project-container {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-    }
-
-    .login-container, 
-    .admin-container,
-    #project-detail-container {
-        margin: 20px auto;
-        padding: 20px;
-    }
-
-    #search-input {
-        width: 80%;
+    #theme-toggle {
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
     }
 }
 
-
-/* Untuk layar Mobile (lebar maksimal 480px) */
 @media (max-width: 480px) {
     body {
         padding: 10px;
     }
-    
     header h1 {
         font-size: 1.8em;
     }
-
     header p {
         font-size: 1em;
     }
-
     .project-container {
-        /* Hanya satu kolom di layar kecil */
         grid-template-columns: 1fr;
-        gap: 15px;
     }
-
-    .filter-btn {
-        padding: 6px 12px;
-        margin: 3px;
-    }
-
     #search-input {
         width: 90%;
     }
-
-    .admin-project-list-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+    #theme-toggle {
+        position: static;
+        margin: 15px auto 0;
+    }
+    .detail-header h1 {
+        font-size: 2em;
     }
 }
