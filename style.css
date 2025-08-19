@@ -112,6 +112,7 @@ header p {
     display: flex;
     flex-direction: column;
     position: relative;
+    height: 100%; /* <-- TAMBAHKAN BARIS INI */
 }
 
 .project-card:hover {
@@ -129,22 +130,24 @@ header p {
     object-fit: cover;
 }
 
-.project-card-content {
-    padding: 20px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
 .project-card-content h3 {
     margin-top: 0;
     color: var(--text-color);
 }
+/* Ganti seluruh blok kode di bawah ini di style.css Anda */
+
+.project-card-content {
+    padding: 20px;
+    flex-grow: 1; /* Biarkan ini agar area konten mengisi sisa ruang kartu */
+    display: flex;
+    flex-direction: column;
+}
 
 .project-card-content p {
-    font-size: 0.9em;
+    font-size: 0.9em;
+    /* PASTIKAN flex-grow: 1; DIHAPUS DARI SINI */
     color: var(--light-text-color);
-    margin-bottom: 15px;
+    margin-bottom: 15px; /* Ini boleh tetap ada untuk memberi jarak */
 }
 
 .project-card-content a {
@@ -154,7 +157,7 @@ header p {
     padding: 10px 15px;
     text-decoration: none;
     border-radius: 8px;
-    margin-top: auto;
+    margin-top: auto; /* INI KUNCINYA, akan mendorong tombol ke bawah */
     font-weight: bold;
     text-align: center;
     transition: background-color var(--transition-speed);

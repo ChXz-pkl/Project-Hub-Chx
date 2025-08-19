@@ -1,30 +1,28 @@
 // Impor fungsi-fungsi yang kita butuhkan dari Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import {
-    getFirestore, collection, getDocs, doc, addDoc,
-    updateDoc, deleteDoc, getDoc, query, orderBy,
-    limit, startAfter // <-- TAMBAHKAN DUA INI
+import { 
+    getFirestore, collection, getDocs, doc, addDoc, 
+    updateDoc, deleteDoc, getDoc, query, orderBy
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+import { 
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, 
     createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-// GANTI DENGAN KODE KONFIGURASI DARI PROYEK FIREBASE-MU!
+// --- KONFIGURASI FIREBASE ---
 const firebaseConfig = {
-    apiKey: "AIzaSyB4Owqi9BzTiiIEn-uFO_3LR0-M-cUNXuU",
-    authDomain: "project-hub-59deb.firebaseapp.com",
-    projectId: "project-hub-59deb",
-    storageBucket: "project-hub-59deb.firebasestorage.app",
-    messagingSenderId: "774293207846",
-    appId: "1:774293207846:web:212bce38412f28041cdfe7",
-    measurementId: "G-9YD95MKGGZ"
+  apiKey: "AIzaSyB4Owqi9BzTiiIEn-uFO_3LR0-M-cUNXuU",
+  authDomain: "project-hub-59deb.firebaseapp.com",
+  projectId: "project-hub-59deb",
+  storageBucket: "project-hub-59deb.firebasestorage.app",
+  messagingSenderId: "774293207846",
+  appId: "1:774293207846:web:212bce38412f28041cdfe7",
+  measurementId: "G-9YD95MKGGZ"
 };
 
 // --- KREDENSIAL CLOUDINARY ---
 const CLOUDINARY_CLOUD_NAME = "dkrdaeldf";
 const CLOUDINARY_UPLOAD_PRESET = "project-hub";
-// -------------------------
 
 // --- DAFTAR KATEGORI YANG TERSEDIA ---
 const availableCategories = ["Web App", "Mobile App", "Desain Grafis", "UI/UX", "Lainnya"];
@@ -38,27 +36,21 @@ const projectsCollectionRef = collection(db, 'projects');
 // --- Mulai Logika Aplikasi ---
 document.addEventListener('DOMContentLoaded', () => {
 
-    // GANTI SELURUH BLOK INI di script.js
-
-    // --- LOGIKA HALAMAN PUBLIK (index.html) ---
-    // GANTI SELURUH BLOK INI di script.js
-
     // --- LOGIKA HALAMAN PUBLIK (index.html) ---
     const publicProjectList = document.getElementById('project-list');
     if (publicProjectList) {
-        const projectsPerPage = 6; // Atur jumlah proyek per halaman
+        const projectsPerPage = 6;
         let currentPage = 1;
-        let allProjects = []; // Menyimpan semua proyek dari database
-        let currentlyDisplayedProjects = []; // Menyimpan proyek yang sedang ditampilkan (hasil filter/pencarian)
+        let allProjects = []; 
+        let currentlyDisplayedProjects = [];
 
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const pageIndicator = document.getElementById('page-indicator');
         const filterContainer = document.getElementById('filter-buttons');
         const searchInput = document.getElementById('search-input');
-        const searchContainer = document.querySelector('.search-container'); // Menggunakan querySelector
+        const searchContainer = document.querySelector('.search-container');
 
-        // Fungsi untuk menampilkan proyek ke halaman
         const renderProjects = () => {
             publicProjectList.innerHTML = '';
             pageIndicator.textContent = `Halaman ${currentPage}`;
@@ -66,73 +58,58 @@ document.addEventListener('DOMContentLoaded', () => {
             const startIndex = (currentPage - 1) * projectsPerPage;
             const endIndex = startIndex + projectsPerPage;
             const projectsToRender = currentlyDisplayedProjects.slice(startIndex, endIndex);
-
-            // Urutkan ulang di sini agar proyek unggulan selalu di atas di setiap halaman
+            
             projectsToRender.sort((a, b) => (b.isFeatured || false) - (a.isFeatured || false));
-
+            
             if (projectsToRender.length === 0) {
                 publicProjectList.innerHTML = '<p>Tidak ada proyek yang cocok dengan kriteria Anda.</p>';
             } else {
                 projectsToRender.forEach(project => {
                     const card = document.createElement('div');
                     card.className = 'project-card';
-                    if (project.isFeatured) {
-                        card.classList.add('featured');
-                    }
+                    if (project.isFeatured) card.classList.add('featured');
                     card.dataset.category = project.category;
-                    // Di dalam file script.js -> fungsi renderProjects
-
                     card.innerHTML = `
-    <img src="${project.mainImageUrl}" alt="${project.title}">
-
-    <div class="project-info-badges">
-        ${project.status ? `<span class="badge status-badge">${project.status}</span>` : ''}
-        ${project.rating ? `<span class="badge rating-badge">⭐ ${project.rating}</span>` : ''}
-    </div>
-    <div class="project-card-content">
-        ${project.isFeatured ? '<div class="featured-badge">Unggulan</div>' : ''}
-        <h3>${project.title}</h3>
-        <p>${project.description.substring(0, 100)}...</p>
-        <a href="detail.html?id=${project.id}">Lihat Detail</a>
-    </div>
-`;
+                        <img src="${project.mainImageUrl}" alt="${project.title}">
+                        <div class="project-info-badges">
+                            ${project.status ? `<span class="badge status-badge">${project.status}</span>` : ''}
+                            ${project.rating ? `<span class="badge rating-badge">⭐ ${project.rating}</span>` : ''}
+                        </div>
+                        <div class="project-card-content">
+                            ${project.isFeatured ? '<div class="featured-badge">Unggulan</div>' : ''}
+                            <h3>${project.title}</h3>
+                            <p>${project.description.substring(0, 100)}...</p>
+                            <a href="detail.html?id=${project.id}">Lihat Detail</a>
+                        </div>
+                    `;
                     publicProjectList.appendChild(card);
                 });
             }
-
-            // Atur status tombol pagination
+            
             prevBtn.disabled = (currentPage === 1);
             nextBtn.disabled = (endIndex >= currentlyDisplayedProjects.length);
         };
 
-        // Fungsi utama yang menerapkan filter DAN pencarian
         const applyFiltersAndRender = () => {
             const selectedCategory = document.querySelector('.filter-btn.active').dataset.category;
             const searchTerm = searchInput.value.toLowerCase();
-
             let filteredProjects = allProjects;
-
-            // 1. Filter berdasarkan kategori
             if (selectedCategory !== 'Semua') {
                 filteredProjects = filteredProjects.filter(p => p.category === selectedCategory);
             }
-
-            // 2. Filter berdasarkan pencarian
             if (searchTerm) {
-                filteredProjects = filteredProjects.filter(p =>
-                    p.title.toLowerCase().includes(searchTerm) ||
+                filteredProjects = filteredProjects.filter(p => 
+                    p.title.toLowerCase().includes(searchTerm) || 
                     p.description.toLowerCase().includes(searchTerm)
                 );
             }
-
             currentlyDisplayedProjects = filteredProjects;
-            currentPage = 1; // Selalu reset ke halaman 1 setiap kali filter/pencarian berubah
+            currentPage = 1;
             renderProjects();
         };
 
         const createFilterButtons = (projects) => {
             const categories = ['Semua', ...new Set(projects.map(p => p.category).filter(Boolean))];
-
             filterContainer.innerHTML = '';
             categories.forEach(category => {
                 const button = document.createElement('button');
@@ -142,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (category === 'Semua') button.classList.add('active');
                 filterContainer.appendChild(button);
             });
-
             filterContainer.addEventListener('click', (e) => {
                 if (e.target.tagName === 'BUTTON') {
                     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -152,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
-        // Fungsi utama untuk memuat semua proyek dari Firestore
         const loadAllProjects = async () => {
             publicProjectList.innerHTML = '<p>Memuat proyek...</p>';
             try {
@@ -168,17 +143,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     createFilterButtons(allProjects);
                     searchInput.addEventListener('input', applyFiltersAndRender);
-                    applyFiltersAndRender(); // Tampilkan semua proyek pada awalnya
+                    applyFiltersAndRender();
                 }
             } catch (error) {
                 console.error("Error fetching projects: ", error);
                 publicProjectList.innerHTML = "<p>Gagal memuat proyek.</p>";
             }
         };
-
-        // Event listener untuk tombol pagination
+        
         prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
+            if(currentPage > 1) {
                 currentPage--;
                 renderProjects();
             }
@@ -186,13 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         nextBtn.addEventListener('click', () => {
             const totalPages = Math.ceil(currentlyDisplayedProjects.length / projectsPerPage);
-            if (currentPage < totalPages) {
+            if(currentPage < totalPages) {
                 currentPage++;
                 renderProjects();
             }
         });
 
-        // Jalankan fungsi utama
         loadAllProjects();
     }
 
@@ -218,39 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LOGIKA HALAMAN REGISTER (register.html) ---
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const errorMessage = document.getElementById('error-message');
-            const submitButton = registerForm.querySelector('button');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Mendaftarkan...';
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    alert('Registrasi berhasil! Anda akan langsung diarahkan ke panel admin.');
-                    window.location.href = 'admin.html';
-                })
-                .catch((error) => {
-                    let message = 'Terjadi kesalahan saat registrasi.';
-                    if (error.code === 'auth/email-already-in-use') {
-                        message = 'Email ini sudah terdaftar. Silakan gunakan email lain.';
-                    } else if (error.code === 'auth/weak-password') {
-                        message = 'Password terlalu lemah. Gunakan minimal 6 karakter.';
-                    }
-                    errorMessage.textContent = message;
-                    errorMessage.style.display = 'block';
-                })
-                .finally(() => {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Register';
-                });
-        });
-    }
-
     // --- LOGIKA HALAMAN ADMIN (admin.html) ---
     const adminProjectList = document.getElementById('admin-project-list');
     if (adminProjectList) {
@@ -262,12 +202,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 const categorySelect = document.getElementById('project-category');
-                availableCategories.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category;
-                    option.textContent = category;
-                    categorySelect.appendChild(option);
-                });
+                if (categorySelect.options.length <= 1) {
+                    availableCategories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category;
+                        categorySelect.appendChild(option);
+                    });
+                }
 
                 const renderAdminProjects = async () => {
                     adminProjectList.innerHTML = 'Memuat proyek...';
@@ -291,11 +233,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const projectForm = document.getElementById('project-form');
                 const submitButton = projectForm.querySelector('button');
-
+                
                 projectForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-
-                    // --- TAMBAHKAN VALIDASI MANUAL INI ---
+                    
                     const descriptionContent = tinymce.get('project-description').getContent();
                     if (!descriptionContent) {
                         Swal.fire({
@@ -305,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         return;
                     }
-                    // ------------------------------------
 
                     submitButton.disabled = true;
                     submitButton.textContent = 'Menyimpan...';
@@ -331,20 +271,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         const galleryImageFiles = document.getElementById('project-images').files;
                         if (galleryImageFiles.length > 0) {
-                            for (const file of galleryImageFiles) {
+                             for (const file of galleryImageFiles) {
                                 const url = await uploadToCloudinary(file);
                                 galleryImageUrls.push(url);
                             }
                         }
 
-                        // GANTI objek projectData yang lama dengan yang ini
                         const projectData = {
                             title: document.getElementById('project-title').value,
                             description: tinymce.get('project-description').getContent(),
                             link: document.getElementById('project-link').value,
                             category: document.getElementById('project-category').value,
-                            status: document.getElementById('project-status').value, // <-- TAMBAHKAN INI
-                            rating: document.getElementById('project-rating').value,   // <-- TAMBAHKAN INI
+                            status: document.getElementById('project-status').value,
+                            rating: document.getElementById('project-rating').value,
                             mainImageUrl: mainImageUrl,
                             isFeatured: document.getElementById('project-featured').checked,
                             createdAt: new Date()
@@ -363,11 +302,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         projectForm.reset();
+                        tinymce.get('project-description').setContent('');
                         document.getElementById('project-image-old-url').value = '';
                         await renderAdminProjects();
+                        Swal.fire('Berhasil!', 'Proyek telah berhasil disimpan.', 'success');
+
                     } catch (error) {
                         console.error("Error saving project: ", error);
-                        alert("Gagal menyimpan proyek! Cek console untuk detail.");
+                        Swal.fire('Gagal Menyimpan', 'Terjadi kesalahan. Silakan coba lagi.', 'error');
                     } finally {
                         submitButton.disabled = false;
                         submitButton.textContent = 'Simpan Proyek';
@@ -394,18 +336,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (result.isConfirmed) {
                                 await deleteDoc(projectDocRef);
                                 await renderAdminProjects();
-                                Swal.fire(
-                                    'Dihapus!',
-                                    'Proyek Anda telah berhasil dihapus.',
-                                    'success'
-                                );
+                                Swal.fire('Dihapus!', 'Proyek Anda telah berhasil dihapus.', 'success');
                             }
                         });
                     }
 
                     if (e.target.classList.contains('edit-btn')) {
                         const docSnap = await getDoc(projectDocRef);
-                        // Di dalam fungsi edit, tambahkan dua baris ini
                         if (docSnap.exists()) {
                             const project = docSnap.data();
                             document.getElementById('project-id').value = id;
@@ -413,20 +350,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             tinymce.get('project-description').setContent(project.description || '');
                             document.getElementById('project-link').value = project.link;
                             document.getElementById('project-category').value = project.category || '';
-                            document.getElementById('project-status').value = project.status || ''; // <-- TAMBAHKAN INI
-                            document.getElementById('project-rating').value = project.rating || ''; // <-- TAMBAHKAN INI
+                            document.getElementById('project-status').value = project.status || '';
+                            document.getElementById('project-rating').value = project.rating || '';
                             document.getElementById('project-image-old-url').value = project.mainImageUrl;
                             document.getElementById('project-featured').checked = project.isFeatured || false;
-
                             window.scrollTo(0, 0);
                         }
                     }
                 });
-
+                
                 renderAdminProjects();
 
             } else {
-                // PENGGUNA TIDAK LOGIN
                 Swal.fire({
                     title: 'Akses Ditolak',
                     text: 'Anda harus login untuk mengakses halaman ini.',
