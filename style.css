@@ -571,3 +571,417 @@ footer a {
         font-size: 2em;
     }
 }
+
+/* GANTI ATAU TAMBAHKAN BAGIAN INI DI style.css */
+
+/* GANTI ATAU TAMBAHKAN BAGIAN INI DI style.css */
+
+/* ==========================================================================
+   3. Kontainer & Layout Utama (Revisi)
+   ========================================================================== */
+main {
+    max-width: 1200px; /* Batasi lebar maksimal agar tidak terlalu lebar di layar besar */
+    margin: 40px auto; /* Tengahkan konten */
+    padding: 0 20px;
+}
+
+.controls-container {
+    display: flex;
+    /* Di desktop: filter kiri, search kanan */
+    justify-content: space-between; 
+    align-items: center;
+    gap: 20px; /* Jarak antar elemen */
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Izinkan wrapping jika layar kecil */
+}
+
+#filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* Di desktop, ini akan tetap di kiri */
+}
+
+.search-container {
+    flex-grow: 1; /* Biarkan search bar mengisi sisa ruang yang tersedia di sisi kanan */
+    max-width: 350px; /* Batasi lebar maksimum search bar di desktop */
+    min-width: 250px; /* Lebar minimum agar tidak terlalu kecil */
+    margin-left: auto; /* Dorong search-container ke kanan di desktop */
+}
+
+/* Penyesuaian untuk input search agar lebih estetik */
+#search-input {
+    width: 100%; /* Pastikan input mengisi container-nya */
+    padding: 12px 15px;
+    border: 1px solid var(--border-color); /* Sesuaikan dengan warna tema */
+    border-radius: var(--border-radius);
+    background-color: var(--input-background); /* Warna background input */
+    color: var(--text-color); /* Warna teks di input */
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#search-input::placeholder {
+    color: var(--light-text-color); /* Warna placeholder */
+}
+
+#search-input:focus {
+    border-color: var(--primary-color); /* Warna border saat fokus */
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2); /* Efek bayangan saat fokus */
+    outline: none; /* Hapus outline default browser */
+}
+
+
+/* ==========================================================================
+   7. Media Queries (Responsiveness) - TAMBAHKAN BAGIAN INI JIKA BELUM ADA
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .controls-container {
+        flex-direction: column; /* Ubah layout menjadi kolom di layar kecil */
+        align-items: flex-start; /* Elemen akan rata kiri */
+        gap: 20px; /* Sesuaikan jarak antar elemen */
+    }
+
+    #filter-buttons {
+        width: 100%; /* Tombol filter akan mengambil lebar penuh */
+        justify-content: center; /* Tengahkan tombol filter di mobile */
+        gap: 8px; /* Sedikit rapat di mobile */
+    }
+
+    .search-container {
+        width: 100%; /* Search bar mengambil lebar penuh di mobile */
+        max-width: 100%; /* Hapus batasan max-width */
+        margin-left: 0; /* Hapus margin-left auto */
+        order: 3; /* Pastikan search bar di bawah filter */
+    }
+
+    .project-container {
+        grid-template-columns: 1fr; /* Satu kolom untuk proyek di mobile */
+    }
+
+    .project-card img {
+        height: 180px; /* Sedikit lebih kecil di mobile */
+    }
+
+    .project-info {
+        padding: 15px;
+    }
+
+    .project-info h3 {
+        font-size: 1.2em;
+    }
+
+    .project-info p {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0 15px; /* Padding lebih kecil di layar sangat kecil */
+    }
+
+    #filter-buttons button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+
+    #search-input {
+        padding: 10px 12px;
+        font-size: 0.95em;
+    }
+
+    .category-badge {
+        font-size: 0.75em;
+        padding: 4px 10px;
+    }
+}
+
+
+/* ==========================================================================
+   4. Kartu Proyek (Project Card) - INI YANG PALING PENTING
+   ========================================================================== */
+.project-container {
+    display: grid;
+    /* Buat kolom-kolom yang responsif */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px; /* Jarak antar kartu */
+}
+
+.project-card {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    overflow: hidden; /* Penting agar gambar tidak keluar dari border-radius */
+    text-decoration: none; /* Hapus garis bawah dari link */
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column; /* Konten dari atas ke bawah */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animasi halus */
+}
+
+/* EFEK HOVER: Sedikit terangkat dan bayangan lebih jelas */
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px var(--shadow-color);
+}
+
+.project-card img {
+    width: 100%;
+    height: 200px; /* Tinggi gambar konsisten */
+    object-fit: cover; /* Gambar akan mengisi area tanpa distorsi */
+    display: block;
+}
+
+.project-info {
+    padding: 20px;
+    flex-grow: 1; /* Pastikan area info mengisi sisa ruang */
+    display: flex;
+    flex-direction: column;
+}
+
+.project-info h3 {
+    font-size: 1.3em;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.project-info p {
+    font-size: 0.95em;
+    color: var(--light-text-color);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1; /* Dorong footer ke bawah */
+}
+
+.project-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto; /* Mendorong footer ke bagian bawah kartu */
+}
+
+.category-badge {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px; /* Bentuk pil */
+    font-size: 0.8em;
+    font-weight: bold;
+    opacity: 0.9;
+}
+
+/* Atur warna badge berdasarkan status, dll */
+.status-badge.selesai { background-color: var(--success-color); }
+.status-badge.berkembang { background-color: var(--info-color); }
+.status-badge.tertunda { background-color: var(--danger-color); }
+
+
+/* Pastikan tag featured tetap ada */
+.featured-tag {
+    position: absolute;
+    top: 15px;
+    right: -30px;
+    background-color: var(--featured-color);
+    color: #333;
+    padding: 5px 30px;
+    font-weight: bold;
+    font-size: 0.9em;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* TAMBAHKAN KODE INI DI BAGIAN AKHIR style.css */
+
+/* ==========================================================================
+   9. Layout Admin Baru (Dua Kolom)
+   ========================================================================== */
+
+.admin-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dua kolom dengan lebar sama */
+    gap: 30px; /* Jarak antar kolom */
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.form-column, .list-column {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Penyesuaian Form */
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-header h2 {
+    margin: 0;
+}
+
+#clear-form-btn {
+    background-color: var(--light-text-color);
+    color: var(--background-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#clear-form-btn:hover {
+    background-color: var(--danger-color);
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+.form-row > * {
+    flex: 1; /* Membuat select sama lebarnya */
+}
+
+/* Efek visual saat mode edit */
+#project-form-container.editing-mode {
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+}
+
+
+/* Daftar Proyek yang Lebih Informatif */
+.admin-project-list-item {
+    display: grid;
+    grid-template-columns: 1fr auto; /* Judul di kiri, tombol di kanan */
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed);
+}
+.admin-project-list-item:last-child {
+    border-bottom: none;
+}
+.admin-project-list-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+}
+
+.admin-project-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+
+.admin-project-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85em;
+    color: var(--light-text-color);
+}
+
+.admin-project-meta span {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+
+.admin-project-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-project-actions button {
+    padding: 6px 12px;
+}
+
+/* Responsivitas untuk Halaman Admin */
+@media (max-width: 1024px) {
+    .admin-main-grid {
+        grid-template-columns: 1fr; /* Kembali ke satu kolom di layar tablet/kecil */
+    }
+}
+
+/* GANTI BLOK CSS ADMIN YANG LAMA DENGAN INI */
+
+/* ==========================================================================
+   9. Style Admin (Layout Awal)
+   ========================================================================== */
+
+/* Penyesuaian Form */
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.form-header h2 {
+    margin: 0;
+}
+#clear-form-btn {
+    background-color: var(--light-text-color);
+    color: var(--background-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#clear-form-btn:hover {
+    background-color: var(--danger-color);
+}
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+.form-row > * {
+    flex: 1;
+}
+
+/* Efek visual saat mode edit */
+#project-form-container.editing-mode {
+    padding: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    background-color: rgba(var(--primary-rgb), 0.05);
+    margin-bottom: 20px; /* Beri jarak bawah saat mode edit aktif */
+}
+
+/* Daftar Proyek yang Lebih Informatif */
+.admin-project-list-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color var(--transition-speed);
+}
+.admin-project-list-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.05);
+}
+.admin-project-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+.admin-project-meta {
+    display: flex;
+    flex-wrap: wrap; /* Agar responsif jika text panjang */
+    gap: 15px;
+    font-size: 0.85em;
+    color: var(--light-text-color);
+}
+.admin-project-meta span {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+.admin-project-actions {
+    display: flex;
+    gap: 10px;
+}
+.admin-project-actions button {
+    padding: 6px 12px;
+}

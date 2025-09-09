@@ -1,59 +1,54 @@
 <!DOCTYPE html>
 <html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MY Project Hub</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="style.css">
-    </head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<body>
-
-
-<header>
-    <h1>My Project Hub | Chx</h1>
-    <p>Kumpulan semua proyek dan karyaku dalam satu halaman.</p>
-    <button id="theme-toggle">☀️</button>
+  <body>
+    <header>
+      <h1>My Project Hub | Chx</h1>
+      <p>Kumpulan semua proyek dan karyaku dalam satu halaman.</p>
+      <button id="theme-toggle">☀️</button>
     </header>
 
     <main>
-        <div id="filter-buttons" class="filter-container">
-        </div>
+      <div class="controls-container">
+        <div id="filter-buttons" class="filter-container"></div>
 
         <div class="search-container">
-            <input type="search" id="search-input" placeholder="Cari proyek berdasarkan judul...">
+          <input type="search" id="search-input" placeholder="Cari proyek..." />
         </div>
-        <div class="pagination-container">
-            <button id="prev-btn" class="page-btn">Sebelumnya</button>
-            <span id="page-indicator">Halaman 1</span>
-            <button id="next-btn" class="page-btn">Berikutnya</button>
-        </div>
+      </div>
 
-        <div id="project-list" class="project-container">
-            <p id="no-projects-message" style="display:none;">Belum ada proyek yang ditambahkan.</p>
-        </div>
+      <div id="project-list" class="project-container">
+        <p id="no-projects-message" style="display: none">
+          Belum ada proyek yang ditambahkan.
+        </p>
+      </div>
 
-        <div class="pagination-container">
-            <button id="prev-btn" class="page-btn">Sebelumnya</button>
-            <span id="page-indicator">Halaman 1</span>
-            <button id="next-btn" class="page-btn">Berikutnya</button>
-        </div>
+      <div class="pagination-container">
+        <button id="prev-btn" class="page-btn">Sebelumnya</button>
+        <span id="page-indicator">Halaman 1</span>
+        <button id="next-btn" class="page-btn">Berikutnya</button>
+      </div>
     </main>
 
-
     <footer>
-        <p>&copy; 2025 Chx | <a href="admin.html">Admin Panel</a></p>
+      <p>&copy; 2025 Chx | <a href="admin.html">Admin Panel</a></p>
     </footer>
 
     <script type="module" src="script.js"></script>
     <script src="theme.js"></script>
-</body>
-
-
+  </body>
 </html>
