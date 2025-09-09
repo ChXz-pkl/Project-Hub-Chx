@@ -985,3 +985,71 @@ main {
 .admin-project-actions button {
     padding: 6px 12px;
 }
+
+/* TAMBAHKAN DI AKHIR style.css */
+/* 10. Pratinjau Galeri Admin */
+.gallery-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    min-height: 80px; /* Beri tinggi minimal agar terlihat */
+}
+
+.gallery-image-wrapper {
+    position: relative;
+    width: 120px;
+    height: 90px;
+}
+
+.gallery-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+}
+
+.delete-gallery-img-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+}
+.delete-gallery-img-btn:hover {
+    transform: scale(1.1);
+}
+
+/* TAMBAHKAN DI AKHIR style.css */
+
+/* 11. Style untuk Drag & Drop Galeri */
+.gallery-image-wrapper {
+    cursor: grab; /* Ubah cursor menjadi tangan saat hover */
+}
+
+.gallery-image-wrapper:active {
+    cursor: grabbing; /* Cursor saat item dipegang */
+}
+
+.sortable-ghost {
+    opacity: 0.4; /* Style untuk item bayangan */
+    background: var(--primary-color);
+}
+

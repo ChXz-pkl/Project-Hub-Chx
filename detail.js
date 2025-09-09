@@ -4,6 +4,9 @@ import {
     getFirestore, doc, getDoc
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+import { Cloudinary } from "https://esm.sh/@cloudinary/url-gen@1.19.0";
+import { scale } from "https://esm.sh/@cloudinary/url-gen@1.19.0/actions/resize";
+
 // GANTI DENGAN KODE KONFIGURASI DARI PROYEK FIREBASE-MU!
 const firebaseConfig = {
     apiKey: "AIzaSyB4Owqi9BzTiiIEn-uFO_3LR0-M-cUNXuU",
@@ -13,6 +16,27 @@ const firebaseConfig = {
     messagingSenderId: "774293207846",
     appId: "1:774293207846:web:212bce38412f28041cdfe7",
     measurementId: "G-9YD95MKGGZ"
+};
+
+// --- [MODIFIKASI] Inisialisasi Cloudinary & Fungsi Helper ---
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: 'dkrdaeldf'
+  }
+});
+
+const createOptimizedImageUrl = (originalUrl, width = 1200) => {
+    if (!originalUrl || !originalUrl.includes('res.cloudinary.com')) {
+        return originalUrl;
+    }
+    const publicId = originalUrl.split('/upload/').pop();
+    
+    // Langsung panggil scale() karena sudah kita import
+    return cld.image(publicId)
+      .resize(scale().width(width))
+      .quality('auto')
+      .format('auto')
+      .toURL();
 };
 
 // Inisialisasi Firebase
@@ -62,16 +86,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             // --- AKHIR DARI KODE TAMBAHAN ---
 
-            // Isi gambar ke dalam slider
             const imagesWrapper = document.getElementById('project-images-wrapper');
             let imageUrls = [project.mainImageUrl, ...(project.galleryImageUrls || [])];
 
-            imagesWrapper.innerHTML = ''; // Kosongkan
+            imagesWrapper.innerHTML = ''; 
             imageUrls.forEach(url => {
-                if (url) { // Pastikan URL tidak kosong
+                if (url) { 
+                    const optimizedUrl = createOptimizedImageUrl(url, 1000); // Lebar 1000px untuk slider
                     const slide = document.createElement('div');
                     slide.className = 'swiper-slide';
-                    slide.innerHTML = `<img src="${url}" alt="Gambar Proyek">`;
+                    slide.innerHTML = `<img src="${optimizedUrl}" alt="Gambar Proyek">`;
                     imagesWrapper.appendChild(slide);
                 }
             });

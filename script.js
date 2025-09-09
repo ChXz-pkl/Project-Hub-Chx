@@ -19,6 +19,8 @@ import {
   signOut,
   createUserWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { Cloudinary } from "https://esm.sh/@cloudinary/url-gen@1.19.0";
+import { scale } from "https://esm.sh/@cloudinary/url-gen@1.19.0/actions/resize";
 
 // --- KONFIGURASI FIREBASE ---
 const firebaseConfig = {
@@ -30,6 +32,12 @@ const firebaseConfig = {
   appId: "1:774293207846:web:212bce38412f28041cdfe7",
   measurementId: "G-9YD95MKGGZ",
 };
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: "dkrdaeldf",
+  },
+});
 
 // --- KREDENSIAL CLOUDINARY ---
 const CLOUDINARY_CLOUD_NAME = "dkrdaeldf";
@@ -49,6 +57,29 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const projectsCollectionRef = collection(db, "projects");
+
+// --- [TAMBAHAN] Fungsi untuk optimasi URL gambar ---
+/**
+ * Mengubah URL asli Cloudinary menjadi URL yang dioptimasi
+ * @param {string} originalUrl - URL gambar asli dari Firestore.
+ * @param {number} width - Lebar gambar yang diinginkan.
+ * @returns {string} URL gambar yang sudah dioptimasi.
+ */
+// --- [MODIFIKASI] Fungsi untuk optimasi URL gambar ---
+const createOptimizedImageUrl = (originalUrl, width = 800) => {
+  if (!originalUrl || !originalUrl.includes("res.cloudinary.com")) {
+    return originalUrl || "https://via.placeholder.com/400x200?text=No+Image";
+  }
+  const publicId = originalUrl.split("/upload/").pop();
+
+  // Langsung panggil scale() karena sudah kita import
+  return cld
+    .image(publicId)
+    .resize(scale().width(width))
+    .quality("auto")
+    .format("auto")
+    .toURL();
+};
 
 // --- Mulai Logika Aplikasi ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -94,27 +125,28 @@ document.addEventListener("DOMContentLoaded", () => {
           const shortDescription =
             project.description.replace(/<[^>]*>/g, "").substring(0, 100) +
             "...";
+          const optimizedImageUrl = createOptimizedImageUrl(
+            project.mainImageUrl,
+            600
+          ); // 600px cukup untuk kartu
 
           projectCard.innerHTML = `
-            ${isFeatured}
-            <img src="${
-              project.mainImageUrl ||
-              "https://via.placeholder.com/400x200?text=No+Image"
-            }" alt="${project.title}">
-            <div class="project-info">
-                <h3>${project.title}</h3>
-                <p>${shortDescription}</p>
-                <div class="project-footer">
-                    <span class="category-badge">${project.category}</span>
-                    <span class="category-badge status-badge ${project.status.toLowerCase()}">${
+                    ${isFeatured}
+                    <img src="${optimizedImageUrl}" alt="${project.title}">
+                    <div class="project-info">
+                        <h3>${project.title}</h3>
+                        <p>${shortDescription}</p>
+                        <div class="project-footer">
+                            <span class="category-badge">${
+                              project.category
+                            }</span>
+                            <span class="category-badge status-badge ${project.status.toLowerCase()}">${
             project.status
           }</span>
-                </div>
-            </div>
-          `;
+                        </div>
+                    </div>
+                `;
 
-          // --- PERBAIKAN DI SINI ---
-          // Menggunakan 'publicProjectList' bukan 'projectList'
           publicProjectList.appendChild(projectCard);
         });
       }
@@ -258,15 +290,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-// GANTI SELURUH BLOK INI DI script.js
+  // GANTI SELURUH BLOK INI DI script.js
 
   // --- LOGIKA HALAMAN ADMIN (admin.html) ---
+  const mainImagePreviewContainer = document.getElementById(
+    "main-image-preview-container"
+  );
   const adminProjectList = document.getElementById("admin-project-list");
   if (adminProjectList) {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // --- [MODIFIKASI] Ambil elemen UI baru dari admin.html ---
         document.getElementById("admin-email").textContent = user.email;
+
         const projectForm = document.getElementById("project-form");
         const formContainer = document.getElementById("project-form-container");
         const formTitle = document.getElementById("form-title");
@@ -289,21 +325,78 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
 
+        const galleryPreviewContainer = document.getElementById(
+          "gallery-preview-container"
+        );
+        new Sortable(galleryPreviewContainer, {
+          animation: 150, // Animasi saat gambar digeser
+          ghostClass: "sortable-ghost", // Style untuk bayangan item yang digeser
+        });
+
+        const renderGalleryPreview = (imageUrls = []) => {
+          galleryPreviewContainer.innerHTML = ""; // Kosongkan dulu
+          imageUrls.forEach((url) => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "gallery-image-wrapper";
+            wrapper.innerHTML = `
+            <img src="${url.replace(
+              "/upload/",
+              "/upload/w_150,h_150,c_fill/"
+            )}" alt="Pratinjau Galeri">
+            <button type="button" class="delete-gallery-img-btn" data-url="${url}">&times;</button>
+        `;
+            galleryPreviewContainer.appendChild(wrapper);
+          });
+        };
+
+        // --- [TAMBAHAN] Event listener untuk menghapus gambar dari pratinjau ---
+        galleryPreviewContainer.addEventListener("click", (e) => {
+          if (e.target.classList.contains("delete-gallery-img-btn")) {
+            // Hapus elemen dari tampilan
+            e.target.parentElement.remove();
+          }
+        });
+
+        const renderMainImagePreview = (url) => {
+          mainImagePreviewContainer.innerHTML = "";
+          if (url) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "gallery-image-wrapper"; // Kita pakai style yang sama
+            wrapper.innerHTML = `
+            <img src="${url.replace(
+              "/upload/",
+              "/upload/w_150,h_150,c_fill/"
+            )}" alt="Pratinjau Gambar Utama">
+            <button type="button" class="delete-gallery-img-btn">&times;</button>
+        `;
+            mainImagePreviewContainer.appendChild(wrapper);
+          }
+        };
+
+        // Tambahkan event listener untuk menghapus pratinjau gambar utama
+        mainImagePreviewContainer.addEventListener("click", (e) => {
+          if (e.target.classList.contains("delete-gallery-img-btn")) {
+            renderMainImagePreview(null); // Kosongkan pratinjau
+            document.getElementById("project-image-old-url").value = ""; // KOSONGKAN URL LAMA!
+          }
+        });
+
         // --- [FUNGSI BARU] Untuk membersihkan dan mereset state form ---
         const resetFormState = () => {
           projectForm.reset();
           tinymce.get("project-description").setContent("");
           document.getElementById("project-id").value = "";
           document.getElementById("project-image-old-url").value = "";
-          
+          renderMainImagePreview(null);
+
           formTitle.textContent = "Tambah Proyek Baru";
           submitBtn.textContent = "Simpan Proyek";
           clearFormBtn.style.display = "none";
           formContainer.classList.remove("editing-mode");
-          
+          renderGalleryPreview();
           // Opsi: scroll kembali ke atas form jika di layar kecil
           if (window.innerWidth < 1024) {
-             formContainer.scrollIntoView({ behavior: 'smooth' });
+            formContainer.scrollIntoView({ behavior: "smooth" });
           }
         };
 
@@ -324,13 +417,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="admin-project-details">
                     <h4>${project.title}</h4>
                     <div class="admin-project-meta">
-                        <span>Kategori: <strong>${project.category || 'N/A'}</strong></span>
-                        <span>Status: <strong>${project.status || 'N/A'}</strong></span>
+                        <span>Kategori: <strong>${
+                          project.category || "N/A"
+                        }</strong></span>
+                        <span>Status: <strong>${
+                          project.status || "N/A"
+                        }</strong></span>
                     </div>
                 </div>
                 <div class="admin-project-actions">
-                    <button class="edit-btn" data-id="${project.id}">Edit</button>
-                    <button class="delete-btn" data-id="${project.id}">Hapus</button>
+                    <button class="edit-btn" data-id="${
+                      project.id
+                    }">Edit</button>
+                    <button class="delete-btn" data-id="${
+                      project.id
+                    }">Hapus</button>
                 </div>
             `;
             adminProjectList.appendChild(item);
@@ -343,7 +444,9 @@ document.addEventListener("DOMContentLoaded", () => {
         projectForm.addEventListener("submit", async (e) => {
           e.preventDefault();
 
-          const descriptionContent = tinymce.get("project-description").getContent();
+          const descriptionContent = tinymce
+            .get("project-description")
+            .getContent();
           if (!descriptionContent) {
             Swal.fire({
               title: "Oops...",
@@ -370,19 +473,32 @@ document.addEventListener("DOMContentLoaded", () => {
               return data.secure_url;
             };
 
-            let mainImageUrl = document.getElementById("project-image-old-url").value;
-            let galleryImageUrls = [];
+            const existingGalleryUrls = Array.from(
+              galleryPreviewContainer.querySelectorAll(
+                ".delete-gallery-img-btn"
+              )
+            ).map((btn) => btn.dataset.url);
 
-            const mainImageFile = document.getElementById("project-image").files[0];
-            if (mainImageFile) mainImageUrl = await uploadToCloudinary(mainImageFile);
-
-            const galleryImageFiles = document.getElementById("project-images").files;
+            // 2. Upload gambar BARU yang dipilih pengguna (jika ada)
+            let newGalleryImageUrls = [];
+            const galleryImageFiles =
+              document.getElementById("project-images").files;
             if (galleryImageFiles.length > 0) {
               for (const file of galleryImageFiles) {
                 const url = await uploadToCloudinary(file);
-                galleryImageUrls.push(url);
+                newGalleryImageUrls.push(url);
               }
             }
+
+            let mainImageUrl = document.getElementById(
+              "project-image-old-url"
+            ).value;
+            let galleryImageUrls = [];
+
+            const mainImageFile =
+              document.getElementById("project-image").files[0];
+            if (mainImageFile)
+              mainImageUrl = await uploadToCloudinary(mainImageFile);
 
             const projectData = {
               title: document.getElementById("project-title").value,
@@ -393,6 +509,10 @@ document.addEventListener("DOMContentLoaded", () => {
               rating: document.getElementById("project-rating").value,
               mainImageUrl: mainImageUrl,
               isFeatured: document.getElementById("project-featured").checked,
+              galleryImageUrls: [
+                ...existingGalleryUrls,
+                ...newGalleryImageUrls,
+              ],
               // Jangan update createdAt saat edit
             };
 
@@ -406,7 +526,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ...galleryImageUrls,
               ];
               // Pertahankan createdAt yang lama
-              projectData.createdAt = existingData.createdAt; 
+              projectData.createdAt = existingData.createdAt;
               await updateDoc(projectDoc, projectData);
             } else {
               projectData.galleryImageUrls = galleryImageUrls;
@@ -417,11 +537,18 @@ document.addEventListener("DOMContentLoaded", () => {
             // --- [MODIFIKASI] Gunakan fungsi reset yang baru ---
             resetFormState();
             await renderAdminProjects();
-            Swal.fire("Berhasil!","Proyek telah berhasil disimpan.","success");
-
+            Swal.fire(
+              "Berhasil!",
+              "Proyek telah berhasil disimpan.",
+              "success"
+            );
           } catch (error) {
             console.error("Error saving project: ", error);
-            Swal.fire("Gagal Menyimpan", "Terjadi kesalahan. Silakan coba lagi.","error");
+            Swal.fire(
+              "Gagal Menyimpan",
+              "Terjadi kesalahan. Silakan coba lagi.",
+              "error"
+            );
           } finally {
             submitBtn.disabled = false;
             // State tombol kembali diatur oleh resetFormState()
@@ -448,7 +575,11 @@ document.addEventListener("DOMContentLoaded", () => {
               if (result.isConfirmed) {
                 await deleteDoc(projectDocRef);
                 await renderAdminProjects();
-                Swal.fire("Dihapus!", "Proyek Anda telah berhasil dihapus.", "success");
+                Swal.fire(
+                  "Dihapus!",
+                  "Proyek Anda telah berhasil dihapus.",
+                  "success"
+                );
               }
             });
           }
@@ -459,20 +590,31 @@ document.addEventListener("DOMContentLoaded", () => {
               const project = docSnap.data();
               document.getElementById("project-id").value = id;
               document.getElementById("project-title").value = project.title;
-              tinymce.get("project-description").setContent(project.description || "");
+              tinymce
+                .get("project-description")
+                .setContent(project.description || "");
               document.getElementById("project-link").value = project.link;
-              document.getElementById("project-category").value = project.category || "";
-              document.getElementById("project-status").value = project.status || "";
-              document.getElementById("project-rating").value = project.rating || "";
-              document.getElementById("project-image-old-url").value = project.mainImageUrl;
-              document.getElementById("project-featured").checked = project.isFeatured || false;
-              
+              document.getElementById("project-category").value =
+                project.category || "";
+              document.getElementById("project-status").value =
+                project.status || "";
+              document.getElementById("project-rating").value =
+                project.rating || "";
+              document.getElementById("project-image-old-url").value =
+                project.mainImageUrl;
+              document.getElementById("project-featured").checked =
+                project.isFeatured || false;
+              renderMainImagePreview(project.mainImageUrl);
+              renderGalleryPreview(project.galleryImageUrls);
               // --- [MODIFIKASI] Logika untuk masuk ke mode edit ---
               formTitle.textContent = `Mengedit: ${project.title}`;
               submitBtn.textContent = "Update Proyek";
               clearFormBtn.style.display = "block";
               formContainer.classList.add("editing-mode");
-              formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              formContainer.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
             }
           }
         });
