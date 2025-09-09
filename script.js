@@ -304,6 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         projectForm.reset();
                         tinymce.get('project-description').setContent('');
                         document.getElementById('project-image-old-url').value = '';
+                        document.getElementById('project-id').value = ''; 
                         await renderAdminProjects();
                         Swal.fire('Berhasil!', 'Proyek telah berhasil disimpan.', 'success');
 
@@ -373,4 +374,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
 });
